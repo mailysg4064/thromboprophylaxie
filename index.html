@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>App : Thromboprophylaxie Péri-opératoire GIHP 2024</title>
+    <style>
+        :root {
+            --primary: #2b5797;
+            --secondary: #4a90e2;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 15px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.4rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-top: 25px;
+            border-left: 4px solid var(--secondary);
+            padding-left: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f9fbfb;
+            border-radius: 8px;
+            border: 1px solid #e1e8ed;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 1.05rem;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd1d9;
+            border-radius: 8px;
+            font-size: 16px; 
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+        .checkbox-group label {
+            font-weight: normal;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        button {
+            width: 100%;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(74, 144, 226, 0.3);
+            cursor: pointer;
+        }
+        button:active {
+            background-color: #357abd;
+            transform: translateY(2px);
+        }
+        .hidden { display: none !important; }
+        
+        #result-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e8f4f8;
+            border-top: 5px solid var(--secondary);
+            border-radius: 8px;
+        }
+        .result-section { margin-bottom: 15px; }
+        .result-title { font-weight: bold; color: var(--primary); margin-bottom: 5px; }
+        .alert { background: #ffebee; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-weight:bold;}
+        .disclaimer { font-size: 0.8em; color: #7f8c8d; text-align: justify; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; }
+        ul { margin: 5px 0; padding-left: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🦵 Thromboprophylaxie Péri-opératoire (GIHP 2024)</h1>
+
+    <!-- SECTION 1 : PATIENT -->
+    <h2>1. Profil du Patient</h2>
+    
+    <div class="form-group">
+        <label>Fonction Rénale (Clairance Cockcroft) :</label>
+        <select id="renal">
+            <option value="normal">Normale ou Légère/Modérée (> 30 mL/min)</option>
+            <option value="severe">Sévère (15 à 30 mL/min)</option>
+            <option value="terminale">Terminale (< 15 mL/min)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Corpulence (IMC) :</label>
+        <select id="bmi">
+            <option value="normal">Normal (IMC < 30) ou Petit Poids</option>
+            <option value="obese1">Obésité classe I ou II (IMC 30 à 39)</option>
+            <option value="obese3">Obésité morbide (IMC ≥ 40)</option>
+        </select>
+    </div>
+
+    <div class="form-group checkbox-group">
+        <label style="font-weight:600; color:#2c3e50; margin-bottom:10px;">Cochez les facteurs de risque présents :</label>
+        <!-- Facteurs Majeurs -->
+        <label><input type="checkbox" id="atcd_vte"> Antécédent personnel de MTEV</label>
+        <label><input type="checkbox" id="thrombo_majeure"> Thrombophilie majeure connue</label>
+        <label><input type="checkbox" id="cancer_actif"> Cancer actif (traitement < 6 mois)</label>
+        <!-- Facteurs Mineurs/Modérés -->
+        <label><input type="checkbox" id="age_75"> Âge ≥ 75 ans</label>
+        <label><input type="checkbox" id="heart_resp"> Insuffisance cardiaque/respiratoire, BPCO</label>
+        <label><input type="checkbox" id="inflam"> Maladie inflammatoire (MICI, PR...)</label>
+        <label><input type="checkbox" id="estrogen"> Traitement œstrogénique / Grossesse / Post-partum</label>
+        <label><input type="checkbox" id="bedrest"> Alitement prolongé récent / Déficit neuro < 1 mois</label>
+    </div>
+
+    <!-- SECTION 2 : CHIRURGIE -->
+    <h2>2. Type de Chirurgie</h2>
+    
+    <div class="form-group">
+        <label>Catégorie :</label>
+        <select id="surg_cat" onchange="updateSubSurg()">
+            <option value="">-- Choisissez une catégorie --</option>
+            <option value="ortho">Orthopédie & Traumatologie</option>
+            <option value="abdo">Abdomino-pelvienne (Digestif, Uro, Gynéco)</option>
+            <option value="onco">Carcinologique (hors abdomino-pelvien : Sein, ORL, Thorax...)</option>
+            <option value="vasc">Vasculaire</option>
+            <option value="bariatric">Bariatrique</option>
+            <option value="icu">Réanimation (Patient critique)</option>
+            <option value="pedia">Pédiatrie (< 14 ans)</option>
+        </select>
+    </div>
+
+    <div class="form-group hidden" id="div_surg_type">
+        <label>Intervention spécifique :</label>
+        <select id="surg_type" onchange="updateDynamicQuestions()"></select>
+    </div>
+
+    <!-- Questions conditionnelles -->
+    <div class="form-group hidden" id="div_raac">
+        <label>Le patient est-il dans un parcours RAAC/Ambulatoire RÉUSSI ?</label>
+        <span style="font-size:0.85em; color:#7f8c8d;">(Chirurgie < 120min ET marche avec déroulé du pas < 24h ET hospitalisation < 5 jours)</span>
+        <select id="raac_success">
+            <option value="yes">Oui, parcours réussi</option>
+            <option value="no">Non (ou facteurs non respectés)</option>
+        </select>
+    </div>
+
+    <div class="form-group hidden" id="div_delayed">
+        <label>La chirurgie est-elle différée de plus de 12h après l'admission ?</label>
+        <select id="surg_delayed">
+            <option value="no">Non</option>
+            <option value="yes">Oui (> 12h)</option>
+        </select>
+    </div>
+
+    <button onclick="calculateRecommendation()">Calculer la recommandation</button>
+
+    <!-- SECTION 3 : RESULTATS -->
+    <div id="result-container" class="hidden">
+        <div class="result-section">
+            <div class="result-title">🎯 Indication & Molécule :</div>
+            <div id="res_indication"></div>
+        </div>
+        <div class="result-section">
+            <div class="result-title">💊 Doses exactes à prescrire :</div>
+            <div id="res_dose" style="background:#fff; border: 1px solid #ccd1d9; padding:10px; border-radius:5px;"></div>
+        </div>
+        <div class="result-section">
+            <div class="result-title">⏳ Durée :</div>
+            <div id="res_duration"></div>
+        </div>
+        <div class="result-section">
+            <div class="result-title">⏱️ Timing de la 1ère dose :</div>
+            <div id="res_timing"></div>
+        </div>
+        <div class="result-section">
+            <div class="result-title">🧦 Moyens mécaniques & Biologie :</div>
+            <div id="res_mech"></div>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        <strong>Source :</strong> Recommandations Formalisées d'Experts (GIHP, SFAR, SFTH, SFMV) 2024. Outil d'aide à la décision ne remplaçant pas l'expertise médicale. Ne gère pas les contre-indications absolues aux anticoagulants.
+    </div>
+</div>
+
+<script>
+    /*[cite: 2] - Les données du tableau de chirurgie proviennent du texte du GIHP 2024 */
+    const subSurgData = {
+        ortho: [
+            {val: "pth", text: "Prothèse Totale de Hanche (PTH)"},
+            {val: "ptg", text: "Prothèse Totale de Genou (PTG)"},
+            {val: "fract_femur_prox", text: "Fracture extrémité sup. du fémur"},
+            {val: "fract_non_majeure", text: "Traumato non majeure (diaphyse, rotule, tibia, cheville, Achille)"},
+            {val: "ortho_mineure", text: "Ligamentoplastie, arthroscopie, méniscectomie, avant-pied, ablation matériel"}
+        ],
+        abdo: [
+            {val: "abdo_high", text: "Risque Élevé (Chirurgie majeure, cancer, prolongée >2h...)"},
+            {val: "abdo_int", text: "Risque Intermédiaire (Sigmoïdectomie froide, donneur rein...)"},
+            {val: "abdo_low", text: "Risque Faible (Vésicule, hernie simple, procto, RTUP, kyste ovaire...)"}
+        ],
+        onco: [
+            {val: "onco_sein", text: "Sein (Tumorectomie, mastectomie...)"},
+            {val: "onco_orl", text: "ORL"},
+            {val: "onco_thorax", text: "Thoracique / Poumon"}
+        ],
+        vasc: [
+            {val: "vasc_aorte", text: "Aorte abdominale ou revascularisation membre inf (voie ouverte)"},
+            {val: "vasc_endo", text: "Endovasculaire artériel membre inf (angioplastie/endoprothèse)"},
+            {val: "vasc_carotid", text: "Chirurgie carotidienne"},
+            {val: "vasc_varice_open", text: "Varices : chirurgie ouverte (stripping)"},
+            {val: "vasc_varice_endo", text: "Varices : procédure thermique (laser)"}
+        ]
+    };
+
+    function updateSubSurg() {
+        const cat = document.getElementById("surg_cat").value;
+        const typeSelect = document.getElementById("surg_type");
+        const divType = document.getElementById("div_surg_type");
+        
+        typeSelect.innerHTML = "";
+        
+        if(subSurgData[cat]) {
+            subSurgData[cat].forEach(item => {
+                const opt = document.createElement("option");
+                opt.value = item.val;
+                opt.text = item.text;
+                typeSelect.appendChild(opt);
+            });
+            divType.classList.remove("hidden");
+        } else {
+            divType.classList.add("hidden");
+            const opt = document.createElement("option");
+            opt.value = cat;
+            opt.text = "Standard";
+            typeSelect.appendChild(opt);
+        }
+        updateDynamicQuestions();
+    }
+
+    function updateDynamicQuestions() {
+        const cat = document.getElementById("surg_cat").value;
+        const type = document.getElementById("surg_type").value;
+        
+        document.getElementById("div_raac").classList.add("hidden");
+        document.getElementById("div_delayed").classList.add("hidden");
+
+        if (type === "pth" || type === "ptg") {
+            document.getElementById("div_raac").classList.remove("hidden");
+        }
+        if (type === "fract_femur_prox" || type === "fract_non_majeure") {
+            document.getElementById("div_delayed").classList.remove("hidden");
+        }
+    }
+
+    function calculateRecommendation() {
+        const bmi = document.getElementById("bmi").value;
+        const renal = document.getElementById("renal").value;
+        const age75 = document.getElementById("age_75").checked;
+        
+        let majorRiskCount = 0;
+        if (bmi === "obese3") majorRiskCount++; 
+        if (document.getElementById("atcd_vte").checked) majorRiskCount++;
+        if (document.getElementById("thrombo_majeure").checked) majorRiskCount++;
+        if (document.getElementById("cancer_actif").checked) majorRiskCount++;
+        
+        let minorRiskCount = 0;
+        if (age75) minorRiskCount++;
+        if (document.getElementById("heart_resp").checked) minorRiskCount++;
+        if (renal === "severe" || renal === "terminale") minorRiskCount++;
+        if (document.getElementById("inflam").checked) minorRiskCount++;
+        if (document.getElementById("estrogen").checked) minorRiskCount++;
+        if (document.getElementById("bedrest").checked) minorRiskCount++;
+        if (bmi === "obese1") minorRiskCount++; 
+
+        const isHighPatientRisk = (majorRiskCount > 0) || (minorRiskCount >= 2);
+
+        let ind = "";
+        let dur = "";
+        let tim = "";
+        let dos = ""; /*[cite: 2] */
+        let mec = "<ul><li><b>Contentions élastiques :</b> NON recommandées (Grade 1-).</li>";
+        
+        let isHighSurgRisk = false;
+
+        const cat = document.getElementById("surg_cat").value;
+        const type = document.getElementById("surg_type").value;
+        
+        if(!cat) { alert("Veuillez sélectionner une catégorie de chirurgie."); return; }
+
+        /*[cite: 2] - Evaluation des chirurgies */
+        switch(cat) {
+            case "ortho":
+                if (type === "pth" || type === "ptg") {
+                    isHighSurgRisk = true;
+                    let raac = document.getElementById("raac_success").value;
+                    let j = (type === "pth") ? 35 : 14;
+                    dur = "Durée totale : " + j + " jours.";
+                    
+                    if (raac === "yes" && !isHighPatientRisk) {
+                        ind = "<b>Thromboprophylaxie SÉQUENTIELLE :</b> Anticoagulant (AOD, HBPM ou fondaparinux) pendant 5 jours, PUIS relais par Aspirine jusqu'à J" + j + ".";
+                        dos += "<b>J1 à J5 : Doses standards</b><br>- Enoxaparine : 4000 UI x 1/j SC<br>- Rivaroxaban : 10 mg x 1/j PO<br>- Apixaban : 2,5 mg x 2/j PO<br>- Dabigatran : 220 mg x 1/j PO (150 mg si >75 ans ou IR modérée)<br><br><b>J6 à J" + j + " :</b><br>- Aspirine : 75 à 100 mg / jour PO.";
+                    } else {
+                        ind = "<b>Anticoagulant seul :</b> AOD, HBPM ou fondaparinux pendant toute la durée. (Le patient n'est pas éligible au relais par aspirine).";
+                    }
+                } 
+                else if (type === "fract_femur_prox") {
+                    isHighSurgRisk = true;
+                    ind = "<b>HBPM ou Fondaparinux.</b> Les AOD et l'aspirine ne sont pas recommandés ici.";
+                    dur = "4 semaines après la chirurgie.";
+                    if (document.getElementById("surg_delayed").value === "yes") {
+                        tim += "<span class='alert'>Chirurgie différée > 12h : Débuter en PRÉ-OPÉRATOIRE par HBPM (respecter 12h entre dernière dose et chirurgie).</span><br>";
+                    }
+                }
+                else if (type === "fract_non_majeure") {
+                    ind = "<b>AOD anti-Xa (ex: rivaroxaban) ou HBPM.</b> L'AOD anti-Xa est préféré à l'HBPM. Pas d'aspirine.";
+                    dur = "Jusqu'à l'appui plantaire avec déroulé du pied (minimum 7 jours).";
+                    if (document.getElementById("surg_delayed").value === "yes") {
+                        tim += "<span class='alert'>Chirurgie différée > 12h : Débuter en PRÉ-OPÉRATOIRE par HBPM.</span><br>";
+                    }
+                }
+                else if (type === "ortho_mineure") {
+                    if (isHighPatientRisk) {
+                        ind = "Le patient présente des facteurs de risque : <b>AOD anti-Xa ou HBPM</b> proposés.";
+                        dur = "Minimum 7 jours.";
+                    } else {
+                        ind = "PAS de thromboprophylaxie pharmacologique systématique recommandée.";
+                        dur = "N/A";
+                    }
+                }
+                break;
+
+            case "abdo":
+                if (type === "abdo_high") {
+                    isHighSurgRisk = true;
+                    ind = "<b>HBPM.</b> (AOD anti-Xa possibles en relais après reprise du transit. Fondaparinux en alternative).";
+                    dur = "<b>4 semaines</b>, y compris en RAAC.";
+                }
+                else if (type === "abdo_int") {
+                    ind = "<b>HBPM.</b> (Possibilité d'utiliser de faibles doses prophylactiques si risque hémorragique).";
+                    dur = "Minimum 7 jours.";
+                }
+                else if (type === "abdo_low") {
+                    if (isHighPatientRisk) {
+                        ind = "Le patient présente des facteurs de risque : <b>HBPM</b> proposée.";
+                        dur = "Minimum 7 jours.";
+                    } else {
+                        ind = "PAS de thromboprophylaxie systématique.";
+                        dur = "N/A";
+                    }
+                }
+                break;
+
+            case "onco":
+                isHighSurgRisk = true; 
+                if (type === "onco_sein") {
+                    if (isHighPatientRisk || minorRiskCount > 0) { 
+                        ind = "Facteurs de risque / Chirurgie complexe : <b>HBPM</b>. (Tumorectomie simple sans risque = pas de prophylaxie).";
+                        dur = "Minimum 7 jours.";
+                    } else {
+                        ind = "PAS de prophylaxie systématique si chirurgie simple et aucun risque.";
+                        dur = "N/A";
+                    }
+                }
+                else if (type === "onco_orl") {
+                    ind = "Si chirurgie majeure (reconstruction/lambeau) et risque hémorragique acceptable : <b>HBPM</b>.";
+                    dur = "Pendant l'hospitalisation (min 7 jours).";
+                }
+                else if (type === "onco_thorax") {
+                    ind = "<b>HBPM</b> recommandée (l'incidence des ETEV est de 2 à 5% à un mois).";
+                    dur = "Jusqu'à 1 mois post-op (proposé par analogie).";
+                }
+                break;
+
+            case "vasc":
+                if (type === "vasc_aorte") {
+                    ind = "<b>HBPM</b> recommandée.";
+                    dur = "Jusqu'à la reprise de la marche.";
+                }
+                else if (type === "vasc_endo" || type === "vasc_carotid" || type === "vasc_varice_endo") {
+                    if (type === "vasc_varice_endo" && isHighPatientRisk) {
+                        ind = "Patient à risque : <b>HBPM</b> courte envisagée.";
+                    } else {
+                        ind = "PAS de thromboprophylaxie veineuse systématique.";
+                    }
+                    dur = "N/A";
+                }
+                else if (type === "vasc_varice_open") {
+                    ind = "<b>HBPM</b>.";
+                    dur = "Courte durée (≤ 7 jours).";
+                }
+                break;
+
+            case "bariatric":
+                isHighSurgRisk = true;
+                ind = "<b>HBPM ou Fondaparinux.</b> Les AOD sont non recommandés (problème d'absorption).";
+                dur = "Minimum 10 jours.";
+                break;
+
+            case "icu":
+                isHighSurgRisk = true;
+                if (renal === "terminale") {
+                    ind = "Insuffisance rénale terminale : <b>Calciparine (HNF)</b>.";
+                } else {
+                    ind = "<b>HBPM</b> recommandée en première intention plutôt que l'HNF (moins d'ETEV et de TIH).";
+                }
+                dur = "Pendant le séjour en réanimation.";
+                break;
+
+            case "pedia":
+                ind = "> 14 ans : Mêmes recommandations que l'adulte.<br>< 14 ans : Au cas par cas selon le cumul des risques (HBPM généralement utilisée).";
+                dur = "Selon la chirurgie.";
+                break;
+        }
+
+        /*[cite: 2] - Timing */
+        if (!tim) { 
+            if (ind.includes("PAS de")) {
+                tim = "N/A";
+            } else if (cat === "icu") {
+                tim = "Dès l'admission en réanimation.";
+            } else {
+                if (isHighPatientRisk) {
+                    tim = "<b>Entre H6 et H12 post-opératoire.</b> (Commencer par une HBPM, quel que soit l'anticoagulant prévu ensuite) car le risque du patient est élevé.";
+                } else {
+                    tim = "<b>Entre H12 et H24 post-opératoire</b> (soit le lendemain matin), pour réduire le risque hémorragique.";
+                }
+            }
+        }
+
+        /*[cite: 2] - Posologies exactes */
+        if (ind.includes("PAS de") || cat === "pedia") {
+            dos = "Non applicable.";
+        } 
+        else if (renal === "terminale" && cat !== "icu") {
+            dos = "<span class='alert'>Insuffisance Rénale Terminale (<15 mL/min)</span><br>HBPM et AOD sont contre-indiqués. La seule option recommandée est :<br><b>- Calciparine (HNF) : 5000 UI x 2 / jour en SC.</b>";
+        } 
+        else if (renal === "severe") {
+            dos = "<span class='alert'>Insuffisance Rénale Sévère (15-30 mL/min)</span><br>HBPM recommandées en 1ère intention. Doses exactes :<br><b>- Enoxaparine : 2000 UI x 1 / jour en SC</b><br>OU<br><b>- Tinzaparine : 4500 UI x 1 / jour en SC.</b><br><i>(Le Fondaparinux 2,5 mg et les AOD sont contre-indiqués ou non recommandés ici).</i>";
+        } 
+        else if (bmi === "obese3") {
+            dos = "<b>Obésité Morbide (IMC ≥ 40) - Doses exactes adaptées :</b><br>";
+            if (cat !== "bariatric") {
+                dos += "<i>Sélectionnez une molécule parmi les options suivantes (selon l'indication) :</i><br>";
+                dos += "<b>- Enoxaparine : 4000 UI x 2 / jour en SC</b> (ou 6000 UI x 1/j, voire 6000 UI x 2/j si poids > 150 kg)<br>";
+                dos += "<b>- Daltéparine : 5000 UI x 2 / jour en SC</b><br>";
+                dos += "<b>- Tinzaparine : 75 UI/kg (poids réel) x 1 / jour en SC</b><br>";
+                dos += "<b>- Fondaparinux : 5 mg x 1 / jour en SC</b><br>";
+                dos += "<b>- Apixaban : 2,5 mg x 2 / jour PO</b><br>";
+                dos += "<b>- Rivaroxaban : 10 mg x 1 / jour PO</b> (Prudence si IMC > 50 kg/m²).";
+            } else {
+                dos += "<b>- Enoxaparine : 4000 UI x 2 / jour en SC</b><br>";
+                dos += "<b>- Daltéparine : 5000 UI x 2 / jour en SC</b><br>";
+                dos += "<b>- Tinzaparine : 75 UI/kg (poids réel) x 1 / jour en SC</b><br>";
+                dos += "<b>- Fondaparinux : 5 mg x 1 / jour en SC</b><br>";
+            }
+        } 
+        else {
+            // Si pas de dose déjà définie pour la séquentielle
+            if(dos === "") {
+                dos = "<b>Doses Standards (IMC < 40 et Clairance > 30 mL/min) :</b><br>";
+                dos += "<i>Sélectionnez la molécule indiquée ci-dessus :</i><br>";
+                dos += "<b>- Enoxaparine : 4000 UI x 1 / jour en SC</b><br>";
+                dos += "<b>- Daltéparine : 5000 UI x 1 / jour en SC</b><br>";
+                dos += "<b>- Tinzaparine : 4500 UI x 1 / jour en SC</b><br>";
+                dos += "<b>- Fondaparinux : 2,5 mg x 1 / jour en SC</b><br>";
+                dos += "<b>- Rivaroxaban : 10 mg x 1 / jour PO</b><br>";
+                dos += "<b>- Apixaban : 2,5 mg x 2 / jour PO</b><br>";
+                let dabiDose = age75 ? "150 mg" : "220 mg";
+                dos += "<b>- Dabigatran : " + dabiDose + " x 1 / jour PO</b> (Dose 150mg si >75 ans ou IR modérée 30-50).";
+            }
+        }
+
+        /*[cite: 2] - Moyens mécaniques */
+        if (cat === "icu") {
+            mec += "<li><b>CPI en réa :</b> Recommandée SI contre-indication aux anticoagulants. L'adjonction systématique CPI + HBPM n'est pas recommandée.</li>";
+        } else if (isHighPatientRisk && isHighSurgRisk) {
+            mec += "<li><span style='color:green'><b>Compression Pneumatique Intermittente (CPI) :</b></span> Patient à très haut risque (chirurgie + patient) -> <b>Associer la CPI per et post-opératoire</b> à la thromboprophylaxie pharmacologique. Ne doit pas retarder le lever.</li>";
+        }
+        
+        mec += "<li><b>Biologie :</b> Surveiller les plaquettes si HBPM/HNF pour dépister une TIH (J4 à J14). Dosage anti-Xa non recommandé en routine.</li></ul>";
+
+        // Affichage
+        document.getElementById("res_indication").innerHTML = ind;
+        document.getElementById("res_duration").innerHTML = dur;
+        document.getElementById("res_timing").innerHTML = tim;
+        document.getElementById("res_dose").innerHTML = dos;
+        document.getElementById("res_mech").innerHTML = mec;
+
+        document.getElementById("result-container").classList.remove("hidden");
+    }
+</script>
+
+</body>
+</html>
